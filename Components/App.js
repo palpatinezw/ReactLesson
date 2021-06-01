@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import Constants from 'expo-constants';
+import InnerBox from './components/innerbox'
 
 export default function App() {
 
@@ -25,8 +26,8 @@ export default function App() {
         </TouchableOpacity>
       </View>
       <View style={styles.outerBox}>
-        <View style={styles.innerBox}></View>
-        <View style={styles.innerBox}></View>
+        <InnerBox color="red"></InnerBox>
+        <InnerBox></InnerBox>
       </View>
       <View style={styles.box}>
         <Text style={styles.title}>TESTING</Text>
@@ -43,10 +44,10 @@ export default function App() {
         </Text>
       </View>
       <View style={styles.outerBox}>
-        <View style={styles.innerBox}></View>
-        <View style={styles.innerBox}></View>
-        <View style={styles.innerBox}></View>
-        <View style={styles.innerBox}></View>
+        <InnerBox color="cyan"></InnerBox>
+        <InnerBox color="black"></InnerBox>
+        <InnerBox color="white"></InnerBox>
+        <InnerBox color="grey"></InnerBox>
       </View>
     </View>
   );
