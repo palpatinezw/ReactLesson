@@ -16,7 +16,7 @@ function DisplayStack({navigation}) {
 
     function addColour() {
         setColors(
-            [{red:RandomNo(0, 255), green:RandomNo(0, 255), blue:RandomNo(0, 255), height:RandomNo(20, 60)}, ...colors,]
+            [{red:RandomNo(0, 255), green:RandomNo(0, 255), blue:RandomNo(0, 255), height:RandomNo(30, 60)}, ...colors,]
         )
     }
 
@@ -27,14 +27,16 @@ function DisplayStack({navigation}) {
     function renderColors({item}) {
         return (
             <TouchableOpacity onPress={() => navigation.navigate("Colour Info", { ...item })}>
-                <ColorBlock red={item.red} blue={item.blue} green={item.green} height={item.height} />
+                <ColorBlock red={item.red} blue={item.blue} green={item.green} height={item.height}>
+                    <Text style={styles.paragraph}>HI</Text>
+                </ColorBlock>
             </TouchableOpacity>
             
         )
     }
 
     function separator() {
-        return (<View style={{height:10}}></View>)
+        return (<View style={{height:10, width:1}}></View>)
     }
 
     return (
@@ -44,7 +46,12 @@ function DisplayStack({navigation}) {
                 <Button title="Remove Colours" onPress={resetColor}/>
             </View>
             <View style={styles.lowercontainer}>
-                <FlatList data={colors} renderItem={renderColors} ItemSeparatorComponent={separator} keyExtractor={(item, index) => index.toString()} />
+                <FlatList 
+                    data={colors}
+                    renderItem={renderColors}
+                    ItemSeparatorComponent={separator}
+                    keyExtractor={(item, index) => index.toString()}
+                />
                 {/* Key extractor bit is to avoid warnings, not adding it seems to be ok as well */}
             </View>
             

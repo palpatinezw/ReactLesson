@@ -9,6 +9,7 @@ export default function ColorBlock(props) {
       backgroundColor: `rgb(${props.red}, ${props.green}, ${props.blue})`, 
       borderRadius: 15,
     }}>
+      {props.children}
     </View>
   );
 }
