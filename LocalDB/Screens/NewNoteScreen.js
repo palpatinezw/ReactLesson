@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import Constants from 'expo-constants';
 
 export default function NewNoteScreen({navigation}) {
     const [text, setText] = useState('Type your note here.')
@@ -30,6 +31,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     container: {
+        paddingTop: Constants.statusBarHeight,
         flex: 1,
         backgroundColor: '#fff',
         padding: 10,
@@ -44,14 +46,17 @@ const styles = StyleSheet.create({
     TextInput: {
         borderWidth: 2,
         borderRadius: 10,
-        height: 70,
+        height: 500,
         padding: 10,
+        flex: 5,
     },
     TitleInput: {
         borderWidth: 2,
         borderRadius: 10,
-        height: 70,
+        height: 50,
         padding: 10,
         fontWeight: 'bold',
+        marginBottom: 10,
+        flex: 1,
     }
 })

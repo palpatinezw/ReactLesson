@@ -37,35 +37,62 @@ function HomeScreen({navigation, route}) {
         <Button title="Add" onPress={() => navigation.navigate("New Note")} />
       )
     })
+
   })
 
   useEffect(() => {
     if (route.params?.text) {
       db.transaction((tx) => {
-        tx.executeSql('INSERT INTO notes (done, title, details) VALUES (0, ?, ?)', [
+        tx.executeSql(`INSERT INTO notes (done, title, details) VALUES (0, ?, ?)`, [
           route.params.title, route.params.text
         ])
       }, null, refreshNotes)
     }
+    navigation.setParams({text:null})
   }, [route.params?.text])
 
-  {/*
-  function addNote() {
-    setNotes([
-      ...notes,
-      {title:"Sample Note", details:"This is just a placeholder", done:false, id:notes.length.toString()}
-    ])
-  }
-  */}
+  useEffect(() => {
+    if (route.params?.del) {
+      db.transaction((tx) => {
+        tx.executeSql(`DELETE FROM notes WHERE id=?`, [
+          route.params.id,
+        ])
+      }, null,refreshNotes)
+    }
+    navigation.setParams({del:null})
+  }, [route.params?.del])
+
+  useEffect(() => {
+    if (route.params?.done) {
+      db.transaction((tx) => {
+        tx.executeSql(`UPDATE notes SET done=1 WHERE id=?`, [
+          route.params.id,
+        ])
+      }, null,refreshNotes)
+    }
+    navigation.setParams({done:null})
+  }, [route.params?.done])
 
   function renderNotes({item}) {
-    return (
-      <TouchableOpacity onPress={() => {navigation.navigate("Note", {...item})}}>
-        <View style={styles.noteBox}>
-          <Text style={styles.noteTitle}>{item.title}</Text>
-        </View>
-      </TouchableOpacity>
-    )
+    if (item.done) {
+      return (
+        <TouchableOpacity onPress={() => {navigation.navigate("Note", {...item})}}>
+          <View style={styles.donenoteBox}>
+            <Text style={styles.donenoteTitle}>{item.title}</Text>
+            <Button title="DEL" onPress={() => navigation.navigate("Home", {del:true, id:item.id})} />
+          </View>
+        </TouchableOpacity>
+      )
+    } else {
+      return (
+        <TouchableOpacity onPress={() => {navigation.navigate("Note", {...item})}}>
+          <View style={styles.noteBox}>
+            <Text style={styles.noteTitle}>{item.title}</Text>
+            <Button title="DONE" onPress={() => navigation.navigate("Home", {done:true, id:item.id})} />
+          </View>
+        </TouchableOpacity>
+      )
+    }
   }
 
   return (
@@ -106,13 +133,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   noteBox: {
-    height: 60,
+    height: 50,
     borderBottomWidth: 5,
     justifyContent: 'center',
     width: "100%",
+    flexDirection: 'row',
+    justifyContent:'space-between',
+  },
+  donenoteBox: {
+    height: 50,
+    borderBottomWidth: 5,
+    justifyContent: 'center',
+    width: "100%",
+    backgroundColor: 'grey',
+    flexDirection: 'row',
+    justifyContent:'space-between',
+    textDecorationLine: 'line-through', textDecorationStyle: 'solid',
   },
   noteTitle: {
     textAlign: 'left',
     padding: 10,
+  },
+  donenoteTitle: {
+    textAlign: 'left',
+    padding: 10,
+    textDecorationLine: 'line-through', textDecorationStyle: 'solid',
   }
 });
