@@ -9,13 +9,14 @@ import Constants from 'expo-constants';
 import InnerBox from './components/innerbox'
 import ProfileBox from './components/ProfileBox'
 import EditScreen from './components/EditScreen'
+import SavedScreen from './components/SavedScreen'
 
 const BUSSTOP_URL = "https://arrivelah2.busrouter.sg/?id="
 
 function MainScreen({navigation, route}) {
   let [loaded, setloaded] = useState(0)
   let [bus, setBus] = useState([])
-  let [busStop, setbusStop] = useState(54321)
+  let [busStop, setbusStop] = useState(0)
 
   function loadBusData(busStopno) {
     setloaded(0)
@@ -60,11 +61,37 @@ function MainScreen({navigation, route}) {
     ></ProfileBox>)
   }
 
+  if (bus.length==0) {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.outerBox} onPress={()=>navigation.navigate("Edit", {busStop})}>
+          <Text style={styles.title}>{(busStop==0 ? "Click here (or S) to set bus stop" : "Invalid bus stop number! Click here (or S) to change it!")}</Text>
+        </TouchableOpacity>
+
+        <View style={styles.box}>
+        </View>
+        <View style={styles.outerBox}>
+          <TouchableOpacity onPress={() => loadBusData(busStop)}>
+            <InnerBox color="cyan">
+              <Text style={styles.refrsh}>⟳</Text>
+            </InnerBox>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>navigation.navigate("Saved", {busStop})}>
+            <InnerBox color="cyan">
+              <Text style={styles.refrsh}>S</Text>
+            </InnerBox>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.outerBox}>
+      <TouchableOpacity style={styles.outerBox} onPress={()=>navigation.navigate("Edit", {busStop})}>
         <Text style={styles.title}>BUS STOP {busStop}</Text>
-      </View>
+      </TouchableOpacity>
+
       <View style={styles.box}>
         <FlatList data={bus} renderItem={renderItem}/>
       </View>
@@ -74,7 +101,7 @@ function MainScreen({navigation, route}) {
             <Text style={styles.refrsh}>⟳</Text>
           </InnerBox>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("Edit", {busStop})}>
+        <TouchableOpacity onPress={()=>navigation.navigate("Saved", {busStop})}>
           <InnerBox color="cyan">
             <Text style={styles.refrsh}>S</Text>
           </InnerBox>
@@ -87,9 +114,10 @@ function MainScreen({navigation, route}) {
 const Stack = createStackNavigator()
 export default function App() {
   return (<NavigationContainer>
-    <Stack.Navigator mode="modal" headerMode="none">
+    <Stack.Navigator headerMode="none">
       <Stack.Screen name="Main" component={MainScreen} />
       <Stack.Screen name="Edit" component={EditScreen} />
+      <Stack.Screen name="Saved" component={SavedScreen} />
     </Stack.Navigator>
   </NavigationContainer>)
 }

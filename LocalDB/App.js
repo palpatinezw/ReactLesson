@@ -33,7 +33,7 @@ function HomeScreen({navigation, route}) {
         'CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, details TEXT, done INT)'
       )
     }, null, refreshNotes)
-  })
+  }, [])
 
   useEffect(() => {
     navigation.setOptions({
