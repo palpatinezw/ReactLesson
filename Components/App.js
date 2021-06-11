@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useState } from 'react';
 import Constants from 'expo-constants';
 import InnerBox from './components/innerbox'
@@ -18,15 +18,15 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.outerBox}>
-        <TouchableOpacity style={styles.innerBox} onPress={() => addVal(1)}>
+        <Pressable style={styles.innerBox} onPress={() => addVal(1)} onLongPress={() => addVal(count)}>
           <Text style={styles.number}>+1</Text>
-        </TouchableOpacity>
+        </Pressable>
         <TouchableOpacity style={styles.innerBox} onPress={() => addVal(-count)}>
           <Text style={styles.number}>0</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.innerBox} onPress={() => addVal(-1)}>
+        <Pressable style={styles.innerBox} onPress={() => addVal(-1)} onLongPress={() => addVal(-count/2)}>
           <Text style={styles.number}>-1</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.outerBox}>
         <InnerBox color="red"></InnerBox>
