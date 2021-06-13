@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity, Modal, TextInput } from 'react-native';
 import * as SQLite from "expo-sqlite";
 import { FontAwesome } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -16,6 +17,7 @@ const db = SQLite.openDatabase("notes.db");
 
 function HomeScreen({navigation, route}) {
   const [notes, setNotes] = useState([])
+  const [modalVisible, setModalVisible] = useState(false);
 
   function refreshNotes() {
     db.transaction((tx)=> {
@@ -38,7 +40,7 @@ function HomeScreen({navigation, route}) {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("New Note")}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <View style={styles.newButton}>
             <Text style={{fontWeight: "bold"}}>+</Text>
           </View>
@@ -58,6 +60,15 @@ function HomeScreen({navigation, route}) {
     }
     navigation.setParams({text:null})
   }, [route.params?.text])
+
+  function addNewNote(nTitle, nText) {
+    db.transaction((tx) => {
+      tx.executeSql(`INSERT INTO notes (done, title, details) VALUES (0, ?, ?)`, [
+        nTitle, nText
+      ])
+    }, null, refreshNotes)
+    setModalVisible(false)
+  }
 
   useEffect(() => {
     if (route.params?.del) {
@@ -111,8 +122,30 @@ function HomeScreen({navigation, route}) {
     }
   }
 
+  const [text, setText] = useState('Type your note here.')
+  const [title, setTitle] = useState('Title of your note')
+
   return (
     <View style={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.newnotecontainer}>
+            <Text style={styles.title}>
+                Add a note!
+            </Text>
+            <TextInput style={styles.TitleInput} value={title} onChangeText={(newText) => setTitle(newText)}/>
+            <TextInput style={styles.TextInput} value={text} onChangeText={(newText) => setText(newText)}/>
+            <View style={styles.buttonrow}>
+                <Button title="submit" onPress={() => addNewNote(title, text)} />
+            </View>
+        </View>
+      </Modal>
       <FlatList data={notes} renderItem={renderNotes} style={{width: "100%"}} keyExtractor={item => item.id.toString()}/>
     </View>
   )
@@ -156,7 +189,6 @@ export default function App() {
             iconName = 'gears';
           }
 
-            // You can return any component that you like here!
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
         })}
@@ -218,5 +250,39 @@ const styles = StyleSheet.create({
     marginRight: 5,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  buttonrow: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent:'center',
+    padding: 20,
+  },
+  TextInput: {
+      borderWidth: 2,
+      borderRadius: 10,
+      height: 500,
+      padding: 10,
+      flex: 5,
+  },
+  TitleInput: {
+      borderWidth: 2,
+      borderRadius: 10,
+      height: 50,
+      padding: 10,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      flex: 1,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: 'center',
+  },
+  newnotecontainer: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 10,
+    justifyContent: 'center'
+  },
 });
