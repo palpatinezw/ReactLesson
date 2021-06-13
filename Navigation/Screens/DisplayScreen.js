@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, Button, FlatList, Pressable, Alert } from 'react-native';
 import Constants from 'expo-constants';
 import ColorBlock from '../components/ColorBlock'
 
@@ -26,11 +26,14 @@ function DisplayStack({navigation}) {
 
     function renderColors({item}) {
         return (
-            <TouchableOpacity onPress={() => navigation.navigate("Colour Info", { ...item })}>
+            <Pressable 
+                onPress={() => navigation.navigate("Colour Info", { ...item })} 
+                onLongPress={() => Alert.alert("Colours", `Colours: red-${item.red} grean-${item.green} blue-${item.blue}`, [], {cancelable:true})}
+            >
                 <ColorBlock red={item.red} blue={item.blue} green={item.green} height={item.height}>
                     <Text style={styles.paragraph}>HI</Text>
                 </ColorBlock>
-            </TouchableOpacity>
+            </Pressable>
             
         )
     }

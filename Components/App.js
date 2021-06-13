@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, Pressable } from 'react-native';
+import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView, Pressable, Alert } from 'react-native';
 import { useState } from 'react';
 import Constants from 'expo-constants';
 import InnerBox from './components/innerbox'
@@ -18,13 +18,13 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.outerBox}>
-        <Pressable style={styles.innerBox} onPress={() => addVal(1)} onLongPress={() => addVal(count)}>
+        <Pressable style={styles.innerBox} onPress={() => addVal(1)} onLongPress={() => Alert.alert("+1", "This button adds one to the number",[], {cancelable:true})}>
           <Text style={styles.number}>+1</Text>
         </Pressable>
         <TouchableOpacity style={styles.innerBox} onPress={() => addVal(-count)}>
           <Text style={styles.number}>0</Text>
         </TouchableOpacity>
-        <Pressable style={styles.innerBox} onPress={() => addVal(-1)} onLongPress={() => addVal(-count/2)}>
+        <Pressable style={styles.innerBox} onPress={() => addVal(-1)} onLongPress={() => Alert.alert("-1", "This button subtracts one to the number",[], {cancelable:true})}>
           <Text style={styles.number}>-1</Text>
         </Pressable>
       </View>
